@@ -13,15 +13,6 @@ jobs:
     docker:
       - image: circleci/golang:1.10
 
-    dependencies:
-      override:
-        - rm -rf ${GOPATH_BASE}/
-        - mkdir -p "$GOPATH_BASE"
-        - mkdir -p "$GOPATH/bin"
-        - cp -r ${HOME}/${CIRCLE_PROJECT_REPONAME} ${GOPATH_BASE}/
-        - go get github.com/govend/govend
-        - sudo pip install awscli
-
     steps:
       - checkout
       - setup_remote_docker
@@ -40,6 +31,11 @@ jobs:
             mkdir -p "${GOPATH_HEAD}/bin"
 
       - run:
+          name: Install dependencies
+          command: |
+            sudo apt-get -y -qq install awscli
+
+      - run:
           name: Build application container
           command: |
             go install --ldflags '-extldflags "-static"' github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME};
@@ -47,7 +43,6 @@ jobs:
             cp "${GOPATH_HEAD}/bin/${CIRCLE_PROJECT_REPONAME}" bin/deployer;
             chmod +x deploymentTests/*
             docker build -t wowast/${CIRCLE_PROJECT_REPONAME} .;
-            GOPATH="$GOPATH_HEAD"; ( cd ${GOPATH_BASE}/${CIRCLE_PROJECT_REPONAME} && govend -u && git diff --quiet )
 
       - deploy:
           command: |

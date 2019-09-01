@@ -1,0 +1,9 @@
+➜  deployer git:(master) ./create_ebs_env.sh
+Creating EBS application deployer201909011029
+default vpc is vpc-8f8bddeb
+ElasticBeanTalk application created
+API environment e-j384tnwdus is being created
+make_bucket: deployer201909011029
+upload: ./app-version-deployer.json to s3://deployer201909011029/app-version-deployer.json
+waiting for environment...............
+Environment is being deployed. Public endpoint is http://deploye...
